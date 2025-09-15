@@ -35,11 +35,47 @@ public class GlobalExceptionHandler {
         ApiResponse<String> response = new ApiResponse<>(false, ex.getMessage(), null);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(CustomExceptions.EmailAlreadyExistsException.class)
+    public ResponseEntity<ApiResponse<String>> handleUsernameExists(CustomExceptions.EmailAlreadyExistsException ex) {
+        ApiResponse<String> response = new ApiResponse<>(false, ex.getMessage(), null);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<String>> handleGeneralError(Exception ex) {
         ApiResponse<String> response = new ApiResponse<>(false, "An error occurred: " + ex.getMessage(), null);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(CustomExceptions.NoExistingLeaveRequestException.class)
+    public ResponseEntity<ApiResponse<String>> handleNoLeaveRequests(CustomExceptions.NoExistingLeaveRequestException ex) {
+        ApiResponse<String> response = new ApiResponse<>(false, ex.getMessage(), null);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CustomExceptions.NoLeaveRequestForEmployeeException.class)
+    public ResponseEntity<ApiResponse<String>> handleNoLeaveRequestForEmployee(CustomExceptions.NoLeaveRequestForEmployeeException ex) {
+        ApiResponse<String> response = new ApiResponse<>(false, ex.getMessage(), null);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CustomExceptions.LeaveNotFoundException.class)
+    public ResponseEntity<ApiResponse<String>> handleLeaveNotFound(CustomExceptions.LeaveNotFoundException ex) {
+        ApiResponse<String> response = new ApiResponse<>(false, ex.getMessage(), null);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CustomExceptions.InvalidStatusException.class)
+    public ResponseEntity<ApiResponse<String>> handleInvalidStatus(CustomExceptions.InvalidStatusException ex) {
+        ApiResponse<String> response = new ApiResponse<>(false, ex.getMessage(), null);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+
+    }
+
+    @ExceptionHandler(CustomExceptions.UnauthorizedActionException.class)
+    public ResponseEntity<ApiResponse<String>> handleUnauthorized(CustomExceptions.UnauthorizedActionException ex) {
+        ApiResponse<String> response = new ApiResponse<>(false, ex.getMessage(), null);
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 }
 

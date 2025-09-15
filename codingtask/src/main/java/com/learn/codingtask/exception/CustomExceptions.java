@@ -22,4 +22,43 @@ public class CustomExceptions {
             super("Invalid role: " + role + ". Allowed roles are ADMIN or USER.");
         }
     }
+
+    public static class NoExistingLeaveRequestException extends RuntimeException {
+        public NoExistingLeaveRequestException() {
+            super("No pending Leave requests");
+        }
+    }
+
+    public static class NoLeaveRequestForEmployeeException extends RuntimeException {
+        public NoLeaveRequestForEmployeeException(String userName) {
+            super("No leave request found for employee: " + userName);
+        }
+    }
+
+    public static class LeaveNotFoundException extends RuntimeException {
+        public LeaveNotFoundException(Long leaveId) {
+            super("Leave request with ID " + leaveId + " not found");
+        }
+    }
+
+
+    // Invalid status
+    public static class InvalidStatusException extends RuntimeException {
+        public InvalidStatusException(String status) {
+            super("Invalid status: " + status + ". Allowed values are APPROVED or REJECTED.");
+        }
+    }
+
+    //  Unauthorized action (not admin)
+    public static class UnauthorizedActionException extends RuntimeException {
+        public UnauthorizedActionException(String userName) {
+            super("User '" + userName + "' is not authorized to approve/reject leave requests");
+        }
+    }
+
+    public static class EmailAlreadyExistsException extends RuntimeException{
+        public EmailAlreadyExistsException(String email){
+            super("email: "+email+" already registered");
+        }
+    }
 }

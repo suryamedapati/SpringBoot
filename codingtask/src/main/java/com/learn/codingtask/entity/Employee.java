@@ -4,6 +4,8 @@ package com.learn.codingtask.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -27,4 +29,6 @@ public class Employee {
 
     private String phoneNumber;
     private String role;
+
+
 }
