@@ -55,10 +55,20 @@ public class CustomExceptions {
             super("User '" + userName + "' is not authorized to approve/reject leave requests");
         }
     }
+    public static class UnauthorizedException extends RuntimeException{
+        public UnauthorizedException(String message){
+          super("Unauthorised:" +message) ;
+        }
+    }
 
     public static class EmailAlreadyExistsException extends RuntimeException{
         public EmailAlreadyExistsException(String email){
             super("email: "+email+" already registered");
+        }
+    }
+    public static class InactiveProfileException extends RuntimeException{
+        public InactiveProfileException(String message){
+            super(message);
         }
     }
 }

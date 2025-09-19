@@ -45,5 +45,7 @@ public class EmployeeDTO {
             message = "Role must be either ADMIN or USER"
     )
     private String role;
+
+    private boolean isActive;
 }
 

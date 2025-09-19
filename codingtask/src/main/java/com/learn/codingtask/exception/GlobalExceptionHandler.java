@@ -71,11 +71,21 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 
     }
-
     @ExceptionHandler(CustomExceptions.UnauthorizedActionException.class)
     public ResponseEntity<ApiResponse<String>> handleUnauthorized(CustomExceptions.UnauthorizedActionException ex) {
         ApiResponse<String> response = new ApiResponse<>(false, ex.getMessage(), null);
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
+
+    @ExceptionHandler(CustomExceptions.UnauthorizedException.class)
+    public ResponseEntity<ApiResponse<String>> handleUnauthorizedEmployees(CustomExceptions.UnauthorizedException ex){
+        ApiResponse<String> response = new ApiResponse<>(false, ex.getMessage(), null);
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+    }
+    public ResponseEntity<ApiResponse<String>> handleInactiveProfileException(CustomExceptions.InactiveProfileException ex){
+        ApiResponse<String> response = new ApiResponse<>(false, ex.getMessage(), null);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
 }
 
