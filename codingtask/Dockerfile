@@ -1,14 +1,13 @@
-# Step 1: Use a lightweight JDK base image
-FROM eclipse-temurin:17-jdk-alpine
-
-# Step 2: Set a working directory
+# Stage 1: Build the jar
+FROM maven:3.9.3-eclipse-temurin-17 AS build
 WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Step 3: Copy Maven/Gradle build artifact into container
-COPY target/spring-boot-docker.jar app.jar
-
-# Step 4: Expose port
+# Stage 2: Run the jar
+FROM eclipse-temurin:17-jdk-alpine
+WORKDIR /app
+COPY --from=build /app/target/spring-boot-docker.jar app.jar
 EXPOSE 8080
-
-# Step 5: Run the Spring Boot application
 ENTRYPOINT ["java", "-jar", "app.jar"]
