@@ -6,6 +6,7 @@ import com.learn.codingtask.exception.CustomExceptions;
 import com.learn.codingtask.repository.EmployeeRepository;
 
 import com.learn.codingtask.security.SecurityConfig;
+import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
@@ -62,12 +63,39 @@ public class EmployeeService {
         if(employee==null||!employee.isActive()){
             throw new CustomExceptions.InactiveProfileException("Your profile is inactive,please contact admin");
         }
-        if (employee==null || passwordEncoder.matches(loginRequest.getPassword(),employee.getPassword())) {
-            throw new CustomExceptions.UsernameAlreadyExistsException("Invalid credentials!!! Please try again.");
+        if (employee==null || !passwordEncoder.matches(loginRequest.getPassword(),employee.getPassword())) {
+            throw new CustomExceptions.InvalidCredentialsException("Invalid credentials!!! Please try again.");
         }
         EmployeeResponseDTO response = modelMapper.map(employee,EmployeeResponseDTO.class);
         return response;
     }
+    public EmployeeResponseDTO updateEmployee(String userName, UpdateEmployeeDTO updatedEmployee) {
+        Employee existing = repository.findByUserName(userName);
+         if(existing == null){
+             throw new CustomExceptions.EmployeeNotFoundException(userName);
+         }
+        // ✅ Update allowed fields
+        existing.setFirstName(updatedEmployee.getFirstName());
+        existing.setLastName(updatedEmployee.getLastName());
+        existing.setEmail(updatedEmployee.getEmail());
+        existing.setPhoneNumber(updatedEmployee.getPhoneNumber());
+        existing.setRole(updatedEmployee.getRole());
+        existing.setActive(updatedEmployee.isActive());
+
+        // ✅ If password provided, update with encryption
+       /* if (updatedEmployee.getPassword() != null && !updatedEmployee.getPassword().isEmpty()) {
+            existing.setPassword(passwordEncoder.encode(updatedEmployee.getPassword()));
+        }*/
+
+        Employee saved = repository.save(existing);
+
+        return modelMapper.map(saved, EmployeeResponseDTO.class);
+    }
+
+
+
+
+
 
     public List<EmployeeResponseDTO> getAllEmployees() {
         List<EmployeeResponseDTO> employeesList = repository.findAll().stream()
@@ -88,9 +116,11 @@ public class EmployeeService {
             throw new CustomExceptions.EmployeeNotFoundException(username);
     }
 
+    @Transactional
     public String deleteEmployee(String username) {
         if (repository.existsByUserName(username)){
         repository.deleteByUserName(username);
+        repository.flush();
         return username;
         }
         else {
@@ -127,8 +157,13 @@ public class EmployeeService {
             throw new CustomExceptions.EmployeeNotFoundException("Employee not found");
         }
 
+        System.out.println("new password:"+resetPasswordRequest.getNewPassword());
+        System.out.println("confirm new password:"+resetPasswordRequest.getNewPassword());
+        System.out.println("encoded"+passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
         // Encode new password
-        employee.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
+        String updatedPassword=passwordEncoder.encode(resetPasswordRequest.getNewPassword());
+        employee.setPassword(updatedPassword);
+        System.out.println(employee.getPassword());
         repository.save(employee);
 
         // Remove token after use

@@ -4,6 +4,7 @@ import com.learn.codingtask.dto.*;
 import com.learn.codingtask.exception.CustomExceptions;
 import com.learn.codingtask.service.EmployeeService;
 import com.learn.codingtask.service.JwtService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/employees")
+@SecurityRequirement(name = "bearerAuth")
 public class EmployeeController {
 
     private final EmployeeService service;
@@ -43,6 +45,28 @@ public class EmployeeController {
 
     }
 
+    @PutMapping("/{userName}")
+    public ResponseEntity<ApiResponse<EmployeeResponseDTO>> updateEmployee(
+            @PathVariable String userName,
+            @RequestBody @Valid UpdateEmployeeDTO updatedEmployee,
+            @RequestHeader("Authorization") String authorization) {
+
+        // ✅ Only Admins can update employee details
+        String token = authorization.substring(7);
+        jwtService.checkAdmin(token);
+
+        EmployeeResponseDTO updated = service.updateEmployee(userName, updatedEmployee);
+
+        ApiResponse<EmployeeResponseDTO> response = new ApiResponse<>(
+                true,
+                "Employee '" + userName + "' updated successfully",
+                updated
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+
     @GetMapping
     public ResponseEntity<ApiResponse<List<EmployeeResponseDTO>>> getEmployees(@RequestHeader("Authorization") String authorization) {
         String token = authorization.substring(7);
@@ -65,6 +89,7 @@ public class EmployeeController {
     public ResponseEntity<ApiResponse<String>> deleteEmployee(@PathVariable String userName,@RequestHeader("Authorization") String authorization) {
         String token = authorization.substring(7);
         jwtService.checkAdmin(token);
+        service.deleteEmployee(userName);
         ApiResponse<String> response = new ApiResponse<>(true, "Employee" + userName + " deleted successfully", userName);
             return ResponseEntity.ok(response);
         }

@@ -30,9 +30,12 @@ public class MailService {
             message.setFrom(fromEmail);
             message.setTo(adminEmail);
             message.setSubject("New Leave Request Submitted");
-            message.setText("User '" + userName + "' has applied for leave (Leave ID: " + leaveId +
-                    ") from " + startDate + " to " + endDate +
-                    ". Reason: " + reason);
+            message.setText("User '" + userName +
+                    "'\n\n has applied for leave with(Leave ID: " + leaveId +")" +
+                    "\n\n from " + startDate + " to " + endDate +
+                    ".\n\n Reason: " + reason+
+                    "\n\n\nThanks,"+"\n"+
+                            "Operations team.");
             mailSender.send(message);
         }
         } catch (Exception e){
@@ -49,7 +52,7 @@ public class MailService {
                     "."+"\n\nAs you requested for resetting the password, " +
                     "Here is your reset OPT: " + otp+"\n\n\n\n"+
                     "Thanks,"+"\n"+
-                    "SpringBoot Operations team.");
+                    "Operations team.");
             mailSender.send(message);
         } catch (Exception e) {
             // Wrap low-level SMTP error into your own exception
@@ -83,9 +86,13 @@ public class MailService {
                 message.setFrom(fromEmail);
                 message.setTo(employee.getEmail());
                 message.setSubject("Leave Request Decision");
-                message.setText("Hello, "+ employee.getFirstName()+"your leave (Leave ID: " +leave.getId() +
+                message.setText("Hello, "+ employee.getFirstName()+
+                        "\nyour leave (Leave ID: " +leave.getId() +
                         ") from " + leave.getStartDate() + " to " + leave.getEndDate() +
-                        "has been "+leave.getStatus());
+                        " has been "+leave.getStatus()+
+                        "\n\nThanks,\n" +
+                                "Operations Team.");
+
                 mailSender.send(message);
         } catch (Exception e){
             throw new CustomExceptions.UnauthorizedException("Failed to send reset email. Please check your email configuration.");

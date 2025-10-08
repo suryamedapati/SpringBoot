@@ -41,7 +41,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 || path.startsWith("/swagger-resources")
                 || path.startsWith("/webjars")
                 || path.equals("/api/employees/forgot-password")
-                || path.equals("/api/employees/reset-password")) {
+                || path.equals("/api/employees/reset-password")
+            ||path.equals("/api/leaves/apply"))
+        {
             filterChain.doFilter(request, response);
             return;
         }

@@ -86,6 +86,9 @@ public class GlobalExceptionHandler {
         ApiResponse<String> response = new ApiResponse<>(false, ex.getMessage(), null);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
-
+    public ResponseEntity<ApiResponse<String>> handleInvalidCredentialsException(CustomExceptions.InvalidCredentialsException ex){
+        ApiResponse<String> response = new ApiResponse<>(false, ex.getMessage(), null);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 }
 

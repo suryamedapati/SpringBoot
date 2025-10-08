@@ -95,7 +95,7 @@ public class JwtService {
 public boolean checkUser(String token, String userName){
     String employeeUserName = extractUsername(token);
         if (!userName.equals(employeeUserName)) {
-            throw new CustomExceptions.UnauthorizedException("Access denied! You can only view your own details.");
+            throw new CustomExceptions.UnauthorizedException("Access denied! You can only apply leave for yourself.");
         }
         return true;
 

@@ -41,7 +41,8 @@ public class SecurityConfig {
                                 "/api/employees/login",          //login is public
                                 "/api/employees",
                                 "/api/employees/forgot-password",
-                                "/api/employees/reset-password"
+                                "/api/employees/reset-password",
+                                "/api/leaves/apply"
                         ).permitAll().anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
