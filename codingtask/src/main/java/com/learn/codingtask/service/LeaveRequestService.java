@@ -1,5 +1,4 @@
 package com.learn.codingtask.service;
-
 import com.learn.codingtask.dto.LeaveRequestDTO;
 import com.learn.codingtask.dto.LeaveResponseDTO;
 import com.learn.codingtask.entity.Employee;
@@ -8,6 +7,8 @@ import com.learn.codingtask.exception.CustomExceptions;
 import com.learn.codingtask.repository.EmployeeRepository;
 import com.learn.codingtask.repository.LeaveRequestRepository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
 
@@ -64,13 +65,37 @@ public class LeaveRequestService {
                 .map(req -> modelMapper.map(req, LeaveResponseDTO.class))
                 .toList();
     }
-
+    public Page<LeaveResponseDTO> getUpcomingLeaveRequests(Pageable pageable){
+        Page leaveRequests = leaveRequestRepository.findUpcomingLeaves(pageable);
+        Page<LeaveResponseDTO> leaveResponsePage = leaveRequests.map(
+                leaveRequest -> modelMapper.map(leaveRequest, LeaveResponseDTO.class));
+        return leaveResponsePage;
+    }
+   /* public Page<LeaveResponseDTO> getUpcomingLeaveRequests(Pageable pageable) {
+        return leaveRequestRepository.findByDateAfter(LocalDate.now(), pageable)
+                .map(leave ->modelMapper.map(leave, LeaveResponseDTO.class));
+                        *//*LeaveResponseDTO.builder()
+                        .id(leave.getId())
+                        .employeeName(leave.getEmployee().getFirstName() + " " + leave.getEmployee().getLastName())
+                        .startDate(leave.getStartDate())
+                        .endDate(leave.getEndDate())
+                        .status(leave.getStatus())
+                        .build());*//*
+    }*/
 
     public List<LeaveResponseDTO> getLeaveRequestsByUser(String username) {
         List<LeaveRequest> requests = leaveRequestRepository.findByEmployeeUserName(username);
         return requests.stream()
                 .map(req -> modelMapper.map(req, LeaveResponseDTO.class))
                 .toList();
+    }
+
+    public Page<LeaveResponseDTO> getLeaveRequestsByUser(String username , Pageable pageable){
+
+        Page leaveRequests =  leaveRequestRepository.findByEmployeeUserName(username, pageable);
+        Page<LeaveResponseDTO> leaveResponsePage = leaveRequests.map(
+                leaveRequest -> modelMapper.map(leaveRequest, LeaveResponseDTO.class));
+        return leaveResponsePage;
     }
 
 

@@ -10,11 +10,16 @@ import jakarta.validation.Valid;
 import org.apache.tomcat.util.http.parser.Authorization;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -55,7 +60,7 @@ public class LeaveRequestController {
 
 
 
-    @GetMapping("/upcoming")
+    /*@GetMapping("/upcoming")
     public ResponseEntity<ApiResponse<List<LeaveResponseDTO>>> getUpcomingLeaveRequests(@RequestHeader("Authorization") String authorization) {
         String token = authorization.substring(7);
         jwtService.checkAdmin(token);
@@ -70,18 +75,71 @@ public class LeaveRequestController {
         } else {
             throw new CustomExceptions.NoExistingLeaveRequestException();
         }
+    }*/
+    @GetMapping("/upcoming")
+    public ResponseEntity<ApiResponse<Page<LeaveResponseDTO>>> getUpcomingLeaveRequests(
+            @RequestHeader("Authorization") String authorization,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        String token = authorization.substring(7);
+        jwtService.checkAdmin(token);
+
+        Page<LeaveResponseDTO> leavePage = leaveRequestService.getUpcomingLeaveRequests(PageRequest.of(page, size));
+
+        if (leavePage.hasContent()) {
+            ApiResponse<Page<LeaveResponseDTO>> response = ApiResponse.<Page<LeaveResponseDTO>>builder()
+                    .success(true)
+                    .message("Upcoming leave requests fetched successfully")
+                    .data(leavePage)
+                    .build();
+
+            return ResponseEntity.ok(response);
+        } else {
+            throw new CustomExceptions.NoExistingLeaveRequestException();
+        }
     }
 
+
+
+
     @GetMapping("/user/{username}")
-    public ResponseEntity<ApiResponse<List<LeaveResponseDTO>>> getLeaveRequestsByUser(@PathVariable String username,
-                                                                                      @RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<ApiResponse<Page<LeaveResponseDTO>>> getLeaveRequestsByUser(@PathVariable String username,
+                                                                                      @RequestHeader("Authorization") String authorization,
+                                                                                      @RequestParam(defaultValue = "0") int page,
+                                                                                      @RequestParam(defaultValue = "5") int size) {
         String token = authorization.substring(7);
         jwtService.checkUserOrAdminForPolicy(token,username);
-        List<LeaveResponseDTO> leaveRequests = leaveRequestService.getLeaveRequestsByUser(username);
-        if (!CollectionUtils.isEmpty(leaveRequests)) {
+        Page<LeaveResponseDTO> leavePage = leaveRequestService.getLeaveRequestsByUser(username,PageRequest.of(page, size));
+        if (leavePage.hasContent()) {
+            ApiResponse<Page<LeaveResponseDTO>> response = ApiResponse.<Page<LeaveResponseDTO>>builder()
+                    .success(true)
+                    .message("Upcoming leave requests fetched successfully")
+                    .data(leavePage)
+                    .build();
+
+            return ResponseEntity.ok(response);
+        } else {
+            throw new CustomExceptions.NoExistingLeaveRequestException();
+        }
+    }
+
+    /*@GetMapping("/user/{username}")
+    public ResponseEntity<ApiResponse<List<LeaveResponseDTO>>> getLeaveRequestsByUser(
+            @PathVariable String username,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestHeader("Authorization") String authorization) {
+
+        String token = authorization.substring(7);
+        jwtService.checkUserOrAdminForPolicy(token, username);
+
+        List<LeaveResponseDTO> leaveRequests = leaveRequestService.getLeaveRequestsByUser(username, page, size);
+
+        if (!leaveRequests.isEmpty()) {
             ApiResponse<List<LeaveResponseDTO>> response = ApiResponse.<List<LeaveResponseDTO>>builder()
                     .success(true)
-                    .message("Leave requests for user: " + username + " fetched successfully")
+                    .message("Leave requests for user: " + username + " fetched successfully (page " + page + ")")
                     .data(leaveRequests)
                     .build();
 
@@ -90,6 +148,7 @@ public class LeaveRequestController {
             throw new CustomExceptions.NoLeaveRequestForEmployeeException(username);
         }
     }
+*/
 
     @PutMapping("/{leaveId}/decision")
     public ResponseEntity<ApiResponse<LeaveResponseDTO>> decideLeave(

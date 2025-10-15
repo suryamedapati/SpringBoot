@@ -48,7 +48,7 @@ public class EmployeeService {
         employee.setActive(true);
         //employee.setPassword(passwordEncoder(employee.getPassword()).toString();
         Employee savedEmployee = modelMapper.map(employee, Employee.class);
-        savedEmployee.setActive(true);
+        savedEmployee.setIsActive(true);
         savedEmployee.setPassword(passwordEncoder.encode(employee.getPassword()));
         Employee savedEmployeeEntity = repository.save(savedEmployee);
         mailService.userCreatedMail(savedEmployee);
@@ -60,7 +60,7 @@ public class EmployeeService {
         Employee employee = repository.findByUserName(loginRequest.getUserName());
         //String password = passwordEncoder.encode(loginRequest.getPassword());
         //System.out.println(password);
-        if(employee==null||!employee.isActive()){
+        if(employee==null||!employee.getIsActive()){
             throw new CustomExceptions.InactiveProfileException("Your profile is inactive,please contact admin");
         }
         if (employee==null || !passwordEncoder.matches(loginRequest.getPassword(),employee.getPassword())) {
@@ -80,7 +80,7 @@ public class EmployeeService {
         existing.setEmail(updatedEmployee.getEmail());
         existing.setPhoneNumber(updatedEmployee.getPhoneNumber());
         existing.setRole(updatedEmployee.getRole());
-        existing.setActive(updatedEmployee.isActive());
+        existing.setIsActive(updatedEmployee.getIsActive());
 
         // ✅ If password provided, update with encryption
        /* if (updatedEmployee.getPassword() != null && !updatedEmployee.getPassword().isEmpty()) {

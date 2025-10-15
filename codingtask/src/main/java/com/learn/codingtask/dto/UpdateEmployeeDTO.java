@@ -39,5 +39,5 @@ public class UpdateEmployeeDTO {
     )
     private String role;
 
-    private boolean isActive;
+    private Boolean isActive;
 }
