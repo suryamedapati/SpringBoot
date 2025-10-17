@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -36,5 +37,8 @@ public class LeaveRequest {
 
     @Column(nullable = false)
     private String status;
+
+    @OneToMany(mappedBy = "leave", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LeaveDocument> documents;
 
 }

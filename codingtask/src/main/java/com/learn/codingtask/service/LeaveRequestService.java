@@ -15,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LeaveRequestService {
@@ -85,6 +86,7 @@ public class LeaveRequestService {
 
     public List<LeaveResponseDTO> getLeaveRequestsByUser(String username) {
         List<LeaveRequest> requests = leaveRequestRepository.findByEmployeeUserName(username);
+        //List<LeaveRequest> sortedrequsts=requests.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
         return requests.stream()
                 .map(req -> modelMapper.map(req, LeaveResponseDTO.class))
                 .toList();
