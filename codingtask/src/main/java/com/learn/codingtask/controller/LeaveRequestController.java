@@ -60,22 +60,6 @@ public class LeaveRequestController {
 
 
 
-    /*@GetMapping("/upcoming")
-    public ResponseEntity<ApiResponse<List<LeaveResponseDTO>>> getUpcomingLeaveRequests(@RequestHeader("Authorization") String authorization) {
-        String token = authorization.substring(7);
-        jwtService.checkAdmin(token);
-        List<LeaveResponseDTO> leaveRequests = leaveRequestService.getUpcomingLeaveRequests();
-        if (!CollectionUtils.isEmpty(leaveRequests)) {
-            ApiResponse<List<LeaveResponseDTO>> response = ApiResponse.<List<LeaveResponseDTO>>builder()
-                    .success(true)
-                    .message("Upcoming leave requests fetched successfully")
-                    .data(leaveRequests)
-                    .build();
-            return ResponseEntity.ok(response);
-        } else {
-            throw new CustomExceptions.NoExistingLeaveRequestException();
-        }
-    }*/
     @GetMapping("/upcoming")
     public ResponseEntity<ApiResponse<Page<LeaveResponseDTO>>> getUpcomingLeaveRequests(
             @RequestHeader("Authorization") String authorization,
@@ -124,31 +108,7 @@ public class LeaveRequestController {
         }
     }
 
-    /*@GetMapping("/user/{username}")
-    public ResponseEntity<ApiResponse<List<LeaveResponseDTO>>> getLeaveRequestsByUser(
-            @PathVariable String username,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestHeader("Authorization") String authorization) {
 
-        String token = authorization.substring(7);
-        jwtService.checkUserOrAdminForPolicy(token, username);
-
-        List<LeaveResponseDTO> leaveRequests = leaveRequestService.getLeaveRequestsByUser(username, page, size);
-
-        if (!leaveRequests.isEmpty()) {
-            ApiResponse<List<LeaveResponseDTO>> response = ApiResponse.<List<LeaveResponseDTO>>builder()
-                    .success(true)
-                    .message("Leave requests for user: " + username + " fetched successfully (page " + page + ")")
-                    .data(leaveRequests)
-                    .build();
-
-            return ResponseEntity.ok(response);
-        } else {
-            throw new CustomExceptions.NoLeaveRequestForEmployeeException(username);
-        }
-    }
-*/
 
     @PutMapping("/{leaveId}/decision")
     public ResponseEntity<ApiResponse<LeaveResponseDTO>> decideLeave(

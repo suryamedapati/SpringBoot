@@ -23,7 +23,7 @@ public class DocumentController {
 
 
 
-    // ✅ Upload document for leave
+
     @PostMapping("/{leaveId}/documents")
     public ResponseEntity<ApiResponse<LeaveDocument>> uploadDocument(@PathVariable Long leaveId,
                                                                      @RequestParam("file") MultipartFile file,
@@ -32,14 +32,14 @@ public class DocumentController {
         return ResponseEntity.ok(new ApiResponse<>(true, "Document uploaded successfully", doc));
     }
 
-    // ✅ Get all documents for a leave
+
     @GetMapping("/{leaveId}/documents")
     public ResponseEntity<ApiResponse<List<LeaveDocument>>> getDocuments(@PathVariable Long leaveId) {
         List<LeaveDocument> docs = leaveService.getDocuments(leaveId);
         return ResponseEntity.ok(new ApiResponse<>(true, "Documents fetched successfully", docs));
     }
 
-    // ✅ Download document
+
     @GetMapping("/documents/{documentId}/download")
     public ResponseEntity<byte[]> downloadDocument(@PathVariable Long documentId) {
         LeaveDocument doc = leaveService.getDocumentById(documentId);

@@ -1,6 +1,7 @@
 package com.learn.codingtask.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -39,6 +40,7 @@ public class LeaveRequest {
     private String status;
 
     @OneToMany(mappedBy = "leave", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<LeaveDocument> documents;
 
 }

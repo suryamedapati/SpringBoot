@@ -1,5 +1,6 @@
 package com.learn.codingtask.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ public class LeaveDocument {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "leave_id", nullable = false)
+    @JsonBackReference
     private LeaveRequest leave;
 
     private String fileName;

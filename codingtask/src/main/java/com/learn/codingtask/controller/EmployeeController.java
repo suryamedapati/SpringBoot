@@ -51,7 +51,7 @@ public class EmployeeController {
             @RequestBody @Valid UpdateEmployeeDTO updatedEmployee,
             @RequestHeader("Authorization") String authorization) {
 
-        // ✅ Only Admins can update employee details
+        // Only Admins can update employee details
         String token = authorization.substring(7);
         jwtService.checkAdmin(token);
 
