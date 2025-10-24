@@ -70,7 +70,7 @@ public class MailService {
                     "Here are your login credentials:\n" +
                     "Username: " + employee.getUserName() + "\n" +
                     "To reset your password or set a new one, please visit the following link:\n" +
-                    "http://localhost:8080/forgot-password\n\n" +
+                    "https://frontend-app-490420756871.us-central1.run.app/forgot-password\n\n" +
                     "Thanks,\n" +
                     "Operations Team");
             mailSender.send(message);
